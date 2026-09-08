@@ -11,6 +11,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+
       - name: Display Received Application Information
         run: |
           echo "SecOps Repo received Application trigger"
@@ -37,10 +38,12 @@ jobs:
 
           docker run --rm \
             -v "${{ github.workspace }}/application:/repo" \
-            zricethezav/gitleaks:latest \
+            ghcr.io/gitleaks/gitleaks:latest \
             detect \
             --source=/repo \
+            --no-git \
+            --no-banner \
+            --redact \
             --report-format=json \
             --report-path=/repo/gitleaks-report.json \
-            --redact \
-            --exit-code=1
+            --exit-code 1
