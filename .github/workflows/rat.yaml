@@ -152,4 +152,3 @@ jobs:
         with:
           name: trivy-dependency-report
           path: application/trivy-report.json
-```
