@@ -6,9 +6,9 @@ on:
       - application_push
 
 jobs:
-#  Stage 1 Secrat Scaning
+#  Stage 1 Secrat Scanning
   receive-trigger:
-    name: gitleak -Secrat Sacning
+    name: gitleak -Secrat Sacnning
     runs-on: ubuntu-latest
 
     steps:
@@ -54,3 +54,13 @@ jobs:
           echo "Files Inside Gitleaks Scanning Scope:"
           echo "======================================"
           find application -type f -print
+
+
+# stage.2  Dependency.Secnning
+trivy:
+  name: Trivy - Dependency Scanning
+  runs-on: ubuntu-latest
+  needs: gitleaks
+
+steps:
+  - run : "Trivy Testing Wrok"
