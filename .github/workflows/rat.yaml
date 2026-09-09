@@ -1,4 +1,4 @@
-name: Step 2 - Receive Application Trigger
+name: SecOps pipeline
 
 on:
   repository_dispatch:
@@ -6,8 +6,9 @@ on:
       - application_push
 
 jobs:
+#  Stage 1 Secrat Scaning
   receive-trigger:
-    name: Verify Cross-Repo Communication
+    name: gitleak -Secrat Sacning
     runs-on: ubuntu-latest
 
     steps:
