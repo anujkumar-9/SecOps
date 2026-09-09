@@ -1,4 +1,4 @@
-name: SecOps pipeline
+name: SecOps Pipeline
 
 on:
   repository_dispatch:
@@ -6,13 +6,12 @@ on:
       - application_push
 
 jobs:
-#  Stage 1 Secrat Scanning
-  receive-trigger:
-    name: gitleak -Secrat Sacnning
+  # Stage 1 : Secret Scanning
+  gitleaks:
+    name: Gitleaks - Secret Scanning
     runs-on: ubuntu-latest
 
     steps:
-
       - name: Display Received Application Information
         run: |
           echo "SecOps Repo received Application trigger"
@@ -33,34 +32,31 @@ jobs:
           echo "Checked Out Commit SHA:"
           git -C application rev-parse HEAD
 
-      - name: Scan for Application Secrets
+      # Scan the checked-out application source for secrets
+      - name: Step 4 - Scan for Application Secrets
         run: |
-          echo "Starting Gitleaks Secret Scan..."
-
           docker run --rm \
-            -v "${{ github.workspace }}/application:/repo" \
+            -v "${GITHUB_WORKSPACE}/application:/repo" \
             ghcr.io/gitleaks/gitleaks:latest \
             detect \
             --source=/repo \
             --no-git \
             --no-banner \
-            --redact \
-            --report-format=json \
-            --report-path=/repo/gitleaks-report.json \
             --exit-code 1
 
       - name: Step 4A - List Scanned Files
         run: |
           echo "Files Inside Gitleaks Scanning Scope:"
-          echo "======================================"
+          echo "====================================="
           find application -type f -print
 
+  # Stage 2 : Dependency Scanning
+  trivy:
+    name: Trivy - Dependency Scanning
+    runs-on: ubuntu-latest
+    needs: gitleaks
 
-# stage.2  Dependency.Secnning
-trivy:
-  name: Trivy - Dependency Scanning
-  runs-on: ubuntu-latest
-  needs: gitleaks
-
-steps:
-  - run : "Trivy Testing Wrok"
+    steps:
+      - name: Trivy Testing Work
+        run: |
+          echo "Trivy Testing Work"
